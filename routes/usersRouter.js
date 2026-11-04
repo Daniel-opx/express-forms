@@ -9,6 +9,7 @@ usersRouter.post("/:id/update", usersController.usersUpdatePost);
 usersRouter.get("/create", usersController.usersCreateGet);
 usersRouter.post("/create", usersController.usersCreatePost);
 usersRouter.post("/:id/delete", usersController.usersDeletePost);
+usersRouter.get("/search", usersController.usersSearchGet)
 
 usersRouter.get("/", usersController.usersListGet);
 

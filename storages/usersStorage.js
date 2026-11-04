@@ -2,13 +2,22 @@
 // This class lets us simulate interacting with a database.
 class UsersStorage {
   constructor() {
-    this.storage = {};
-    this.id = 0;
+    this.storage = {
+      0:{
+        id:0, 
+        firstName:"daniel",
+        lastName: "sass",
+        email: "daniels302@gmail.com",
+        age: 5,
+        bio:"dsdsdsds"
+      }
+    };
+    this.id = 1;
   }
 
   addUser({ firstName, lastName ,email,age,bio}) {
     const id = this.id;
-    this.storage[id] = { id, firstName, lastName,email,age,bio };
+    this.storage[id] = {id,  firstName, lastName,email,age,bio };
     this.id++;
   }
 
@@ -19,6 +28,26 @@ class UsersStorage {
   getUser(id) {
     return this.storage[id];
   }
+
+  searchUser(name, email) {
+    if (!name && !email) {
+      return [];
+    }
+
+    const searchName = name.toLowerCase();
+    const searchEmail = email.toLowerCase();
+
+    return Object.values(this.storage).filter((user) => {
+      const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
+      const userEmail = user.email.toLowerCase();
+      const matchesName = !searchName || fullName.includes(searchName);
+      const matchesEmail = !searchEmail || userEmail.includes(searchEmail);
+
+      return matchesName && matchesEmail;
+    });
+  }
+
+
 
   updateUser(id, { firstName, lastName ,email,age,bio}) {
     this.storage[id] = { id, firstName, lastName,email,age,bio };

@@ -2,12 +2,15 @@
 const usersStorage = require("../storages/usersStorage");
 const { body, validationResult, matchedData } = require("express-validator");
 
+
+const minLength = 1
+const maxLength = 10
 const alphaErr = "must only contain letters.";
-const lengthErr = "must be between 1 and 10 characters.";
+const lengthErr = `must be between ${minLength} and ${maxLength} characters.`;
 
 const validateUser = [
-  body("firstName").trim().isAlpha().withMessage("First name must only contain letters.").isLength({ min: 2, max: 10 }),
-  body("lastName").trim().isAlpha().withMessage("Last name must only contain letters.").isLength({ min: 2, max: 10 }),
+  body("firstName").trim().isAlpha().withMessage("First name must only contain letters.").isLength({ min: minLength, max: maxLength }).withMessage(lengthErr),
+  body("lastName").trim().isAlpha().withMessage("Last name must only contain letters.").isLength({ min: minLength, max: maxLength }).withMessage(lengthErr),
 body("email")
   .trim()
   .notEmpty().withMessage("Email is required.") // <--- Added this
@@ -26,7 +29,7 @@ exports.usersListGet = (req, res) => {
 
 exports.usersCreateGet = (req, res) => {
   res.render("createUser", {
-    title: "Create user",
+    title: "Create user"
   });
 };
 
@@ -84,4 +87,17 @@ exports.usersCreatePost = [
 exports.usersDeletePost = (req, res) => {
   usersStorage.deleteUser(req.params.id);
   res.redirect("/");
+};
+
+exports.usersSearchGet = (req, res) => {
+  const name = typeof req.query.name === "string" ? req.query.name.trim() : "";
+  const email = typeof req.query.email === "string" ? req.query.email.trim() : "";
+  const users = usersStorage.searchUser(name, email);
+
+  res.render("search", {
+    title: "Search page",
+    users,
+    name,
+    email,
+  });
 };
